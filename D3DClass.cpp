@@ -8,6 +8,7 @@ D3DClass::D3DClass()
 	g_pRenderTargetView = NULL;
 	g_pDepthStencilBuffer = NULL;
 	g_pDepthStencilView = NULL;
+
 	//m_depthStencilBuffer = 0;
 	//m_depthStencilState = 0;
 	//m_depthStencilView = 0;
@@ -24,9 +25,9 @@ D3DClass::~D3DClass()
 {
 }
 
-HRESULT D3DClass::Initialize(HWND g_hWnd)
+bool D3DClass::Initialize(HWND g_hWnd)
 {
-	HRESULT							result;
+	HRESULT							result = S_OK;
 	//IDXGIFactory*					factory;
 	//IDXGIAdapter*					adapter;
 	//IDXGIOutput*					adapterOutput;
@@ -74,6 +75,11 @@ HRESULT D3DClass::Initialize(HWND g_hWnd)
 	};
 	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
+
+	this->g_World = XMMatrixIdentity();
+	this->g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, width / (FLOAT)height, 0.01f, 100.0f);
+
+
 	// Initialize the swap chain description.
 	ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 	// Set to a single back buffer.
@@ -104,17 +110,17 @@ HRESULT D3DClass::Initialize(HWND g_hWnd)
 			break;
 	}
 	if (FAILED(result))
-		return result;
+		return false;
 
 	//ID3D11Texture2D* g_pDepthStencilBuffer = NULL;
 	result = g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&g_pDepthStencilBuffer);
 	if (FAILED(result))
-		return result;
+		return false;
 
 	result = g_pd3dDevice->CreateRenderTargetView(g_pDepthStencilBuffer, NULL, &g_pRenderTargetView);
 	g_pDepthStencilBuffer->Release();
 	if (FAILED(result))
-		return result;
+		return false;
 
 	// ÄËß ÏÐÀÂÈËÜÍÎÃÎ ÎÒÎÁÐÀÆÅÍÈß ÃÅÎÌÅÒÐÈÈ
 	// Create depth stencil texture
@@ -134,7 +140,7 @@ HRESULT D3DClass::Initialize(HWND g_hWnd)
 	descDepth.MiscFlags = 0;
 	result = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
 	if (FAILED(result))
-		return result;
+		return false;
 
 	// Create the depth stencil view
 	//ÑÎÇÄÀÍÈÅ Z - ÁÓÔÅÐÀ
@@ -145,7 +151,7 @@ HRESULT D3DClass::Initialize(HWND g_hWnd)
 	descDSV.Texture2D.MipSlice = 0;
 	result = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &descDSV, &g_pDepthStencilView);
 	if (FAILED(result))
-		return result;
+		return false;
 
 	//ÓÊÀÇÀÍÈÅ ÄÈÐÅÊÒÓ, ×ÒÎ ÝÒÎÒ ÐÅÍÄÅÐ-ÒÀÐÃÅÒ ÈÑÏ. ÏÎ ÓÌÎË×. È Â ÍÅÃÎ ÂÑÅ ÐÈÑÎÂÀÒÜ
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
@@ -161,7 +167,7 @@ HRESULT D3DClass::Initialize(HWND g_hWnd)
 	viewport.TopLeftY = 0;
 	g_pImmediateContext->RSSetViewports(1, &viewport);
 
-	return S_OK;
+	return true;
 
 	//// Get the pointer to the back buffer.
 	//hr = g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
@@ -388,7 +394,6 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	return;
 }
 
-
 void D3DClass::EndScene()
 {
 	//// Present the back buffer to the screen since rendering is complete.
@@ -417,6 +422,21 @@ ID3D11Device* D3DClass::GetDevice()
 ID3D11DeviceContext* D3DClass::GetDeviceContext()
 {
 	return g_pImmediateContext;
+}
+
+XMMATRIX D3DClass::GetProjectionMatrix()
+{
+	return this->g_Projection;
+}
+
+XMMATRIX D3DClass::GetWorldMatrix()
+{
+	return this->g_World;
+}
+
+XMMATRIX D3DClass::GetOrthoMatrix()
+{
+	return this->g_Ortho;
 }
 
 //void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)

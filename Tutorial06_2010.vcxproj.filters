@@ -81,5 +81,8 @@
     <None Include="Color.vs">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Tutorial05.fx">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

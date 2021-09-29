@@ -1,15 +1,19 @@
 #pragma once
 
 #include <d3d11.h>
-#include <D3DX10math.h>
+//#include <D3DX10math.h>
+#include <xnamath.h>
+
 
 class ModelClass
 {
 private:
-	struct VertexType
+	struct Vertex
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR4 color;
+		//D3DXVECTOR3 position;
+		//D3DXVECTOR4 color;
+		XMFLOAT3 Pos;
+		XMFLOAT4 Color;
 	};
 
 public:
@@ -27,7 +31,8 @@ private:
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 
-	ID3D11Buffer* m_vertexBuffer, * m_indexBuffer;
+	ID3D11Buffer* g_pVertexBuffer;
+	ID3D11Buffer* g_pIndexBuffer;
 	int m_vertexCount, m_indexCount;
 };
 

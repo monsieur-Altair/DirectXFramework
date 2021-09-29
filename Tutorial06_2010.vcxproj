@@ -402,6 +402,9 @@
     <ResourceCompile Include="Tutorial06.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Tutorial05.fx">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include <dxgi.h>
 #include <d3dcommon.h>
 #include <d3d11.h>
+#include <xnamath.h>
 #include <d3dx10math.h>
 
 class D3DClass
@@ -17,7 +18,7 @@ public:
 	D3DClass(const D3DClass&);
 	~D3DClass();
 	
-	HRESULT Initialize(HWND);
+	bool Initialize(HWND);
 	void Shutdown();
 	void BeginScene(float, float, float, float);
 	void EndScene();
@@ -28,6 +29,10 @@ public:
 	//void GetProjectionMatrix(D3DXMATRIX&);
 	//void GetWorldMatrix(D3DXMATRIX&);
 	//void GetOrthoMatrix(D3DXMATRIX&);
+
+	XMMATRIX GetProjectionMatrix();
+	XMMATRIX GetWorldMatrix();
+	XMMATRIX GetOrthoMatrix();
 
 private:
 
@@ -43,5 +48,9 @@ private:
 	//D3DXMATRIX m_projectionMatrix;
 	//D3DXMATRIX m_worldMatrix;
 	//D3DXMATRIX m_orthoMatrix;
+
+	XMMATRIX g_World;
+	XMMATRIX g_Ortho;
+	XMMATRIX g_Projection;
 };
 
