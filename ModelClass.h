@@ -1,20 +1,11 @@
 #pragma once
 
 #include <d3d11.h>
-//#include <D3DX10math.h>
 #include <xnamath.h>
 
 
 class ModelClass
 {
-private:
-	struct Vertex
-	{
-		//D3DXVECTOR3 position;
-		//D3DXVECTOR4 color;
-		XMFLOAT3 Pos;
-		XMFLOAT4 Color;
-	};
 
 public:
 	ModelClass();
@@ -27,6 +18,12 @@ public:
 	int GetIndexCount();
 
 private:
+	struct Vertex
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Color;
+	};
+
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);

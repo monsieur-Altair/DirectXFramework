@@ -56,50 +56,39 @@ int ModelClass::GetIndexCount()
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
-	Vertex* vertices;
-	WORD* indices;
+	Vertex vertices[]=
+	{
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+	};
+	WORD indices[]=
+	{
+		0,1,2,
+
+		3,5,4,
+
+		0,5,3,
+		0,2,5,
+
+		5,2,4,
+		2,1,4,
+
+		3,4,0,
+		0,4,1,
+	};
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 3;
+	m_vertexCount = 8;
 
 	// Set the number of indices in the index array.
-	m_indexCount = 3;
-
-	// Create the vertex array.
-	vertices = new Vertex[m_vertexCount];
-	if (!vertices)
-	{
-		return false;
-	}
-
-	// Create the index array.
-	indices = new WORD[m_indexCount];
-	if (!indices)
-	{
-		return false;
-	}
-
-
-
-	// Load the vertex array with data.
-	vertices[0].Pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	vertices[0].Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[1].Pos = XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top middle.
-	vertices[1].Color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	vertices[2].Pos = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	vertices[2].Color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-
-	// Load the index array with data.
-	indices[0] = 0;  // Bottom left.
-	indices[1] = 1;  // Top middle.
-	indices[2] = 2;  // Bottom right.
-
-
+	m_indexCount = 24;
 
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 	// Set up the description of the static vertex buffer.
@@ -148,13 +137,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	// Release the arrays now that the vertex and index buffers have been created and loaded.
-	delete[] vertices;
-	vertices = NULL;
-
-	delete[] indices;
-	indices = NULL;
-
 	return true;
 }
 
@@ -183,7 +165,6 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	UINT stride;
 	UINT offset;
-
 
 	// Set vertex buffer stride and offset.
 	stride = sizeof(Vertex);

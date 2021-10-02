@@ -373,32 +373,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="CameraInform.cpp" />
     <ClCompile Include="ColorShaderClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
+    <ClCompile Include="DirectInputClass.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
-    <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="SystemClass.cpp" />
+    <ClCompile Include="TextClass.cpp" />
+    <ClCompile Include="TimerClass.cpp" />
     <ClCompile Include="Tutorial06.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Color.ps">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Color.vs">
-      <FileType>Document</FileType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WinMain</EntryPointName>
-    </None>
+    <ClCompile Include="UIClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="CameraInform.h" />
     <ClInclude Include="ColorShaderClass.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="DirectInputClass.h" />
     <ClInclude Include="GraphicsClass.h" />
-    <ClInclude Include="InputClass.h" />
     <ClInclude Include="ModelClass.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="TextClass.h" />
+    <ClInclude Include="TimerClass.h" />
+    <ClInclude Include="UIClass.h" />
     <ResourceCompile Include="Tutorial06.rc" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,15 @@
 #include "SystemClass.h"
+#include <iostream>
+#include <fstream>
+
 
 SystemClass::SystemClass()
 {
 	this->g_hInst = NULL;
 	this->g_hWnd = NULL;
 	this->m_Graphics = NULL;
+	this->m_Input = NULL;
+	this->m_Timer = NULL;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -17,47 +22,36 @@ SystemClass::~SystemClass()
 
 bool SystemClass::Initialize(HINSTANCE hInstance, int nCmdShow)
 {
-	//int screenWidth, screenHeight;
-	HRESULT result;
-
-	// Initialize the width and height of the screen to zero before sending the variables into the function.
-	//screenWidth = 0;
-	//screenHeight = 0;
+	bool result;
 
 	// Initialize the windows api.
 	this->InitWindow(hInstance, nCmdShow);
 
-	//// Create the input object.  This object will be used to handle reading the keyboard input from the user.
-	//m_Input = new InputClass;
-	//if (!m_Input)
-	//{
-	//	return false;
-	//}
-	//
-	//// Initialize the input object.
-	//m_Input->Initialize();
-	//
-	
-	// Create the graphics object.  This object will handle rendering all the graphics for this application.
+	m_Timer = new TimerClass;
+	if (!m_Timer)
+		return false;
+
+	m_Input = new DirectInputClass;
+	if (!m_Input)
+		return false;
+
+	result = m_Input->Initialize(hInstance,g_hWnd);
+	if (!result)
+		return false;
+
 	m_Graphics = new GraphicsClass;
 	if (!m_Graphics)
-	{
 		return false;
-	}
-	
-	// Initialize the graphics object.
+
 	result = m_Graphics->Initialize(this->g_hWnd);
 	if (!result)
-	{
 		return false;
-	}
 
 	return true;
 }
 
 void SystemClass::Shutdown()
 {
-	// Release the graphics object.
 	if (m_Graphics)
 	{
 		m_Graphics->Shutdown();
@@ -67,15 +61,18 @@ void SystemClass::Shutdown()
 	this->g_hWnd = NULL;
 	this->g_hInst = NULL;
 
-	//// Release the input object.
-	//if (m_Input)
-	//{
-	//	delete m_Input;
-	//	m_Input = 0;
-	//}
-	//
-	// Shutdown the window.
-	//ShutdownWindows();
+	if(m_Input)
+	{
+		m_Input->Shutdown();
+		delete m_Input;
+		m_Input = NULL;
+	}
+
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = NULL;
+	}
 
 	return;
 }
@@ -83,10 +80,9 @@ void SystemClass::Shutdown()
 void SystemClass::Run()
 {
 	bool done, result;
-
-
-	// Initialize the message structure.
 	
+	double frameTime = 0.0f;
+
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 
@@ -109,8 +105,11 @@ void SystemClass::Run()
 		}
 		else
 		{
+			m_Timer->CountFrames();
+			frameTime = m_Timer->GetFrameTime();
+
 			// Otherwise do the frame processing.
-			result = Frame();
+			result = Frame(frameTime);
 			if (!result)
 			{
 				done = true;
@@ -121,19 +120,14 @@ void SystemClass::Run()
 	return;
 }
 
-bool SystemClass::Frame()
+bool SystemClass::Frame(double time)
 {
 	bool result;
+	static CameraInform camInform;
 
+	m_Input->Detect(time, g_hWnd, camInform);
 
-	//// Check if the user pressed escape and wants to exit the application.
-	//if (m_Input->IsKeyDown(VK_ESCAPE))
-	//{
-	//	return false;
-	//}
-
-	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(camInform);
 	if (!result)
 	{
 		return false;
@@ -141,34 +135,6 @@ bool SystemClass::Frame()
 
 	return true;
 }
-
-//LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
-//{
-//	switch (umsg)
-//	{
-//		// Check if a key has been pressed on the keyboard.
-//		case WM_KEYDOWN:
-//		{
-//			// If a key is pressed send it to the input object so it can record that state.
-//			m_Input->KeyDown((unsigned int)wparam);
-//			return 0;
-//		}
-//
-//		// Check if a key has been released on the keyboard.
-//		case WM_KEYUP:
-//		{
-//			// If a key is released then send it to the input object so it can unset the state for that key.
-//			m_Input->KeyUp((unsigned int)wparam);
-//			return 0;
-//		}
-//
-//		// Any other messages send to the default message handler as our application won't make use of them.
-//		default:
-//		{
-//			return DefWindowProc(hwnd, umsg, wparam, lparam);
-//		}
-//	}
-//}
 
 HRESULT SystemClass::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
@@ -193,7 +159,7 @@ HRESULT SystemClass::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
 	// ÑÎÇÄÀÍÈÅ ÎÊÍÀ 
 	this->g_hInst= hInstance;
-	RECT rc = { 0, 0, 1500, 750 };
+	RECT rc = { 0, 0, LENGTH_WINDOW , WIDTH_WINDOW };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	this->g_hWnd = CreateWindow(L"TutorialWindowClass", L"Ìåëüíèêîâ Ìàêñèì 924401", WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance,
@@ -202,34 +168,9 @@ HRESULT SystemClass::InitWindow(HINSTANCE hInstance, int nCmdShow)
 		return E_FAIL;
 
 	ShowWindow(this->g_hWnd, nCmdShow);
+	//UpdateWindow(g_hWnd);
 
 	return S_OK;
-}
-
-void SystemClass::ShutdownWindows()
-{
-	// Show the mouse cursor.
-	//ShowCursor(true);
-
-	// Fix the display settings if leaving full screen mode.
-	//if (FULL_SCREEN)
-	//{
-	//	ChangeDisplaySettings(NULL, 0);
-	//}
-	//
-	// Remove the window.
-	//DestroyWindow(this->g_hWnd);
-	//this->g_hWnd = NULL;
-
-	//
-	// Remove the application instance.
-	//UnregisterClass(m_applicationName, m_hinstance);
-	//m_hinstance = NULL;
-	//
-	// Release the pointer to this class.
-	//ApplicationHandle = NULL;
-
-	return;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

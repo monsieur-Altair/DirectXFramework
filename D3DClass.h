@@ -25,14 +25,17 @@ public:
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
+	IDXGISwapChain* GetSwapChain();
 
-	//void GetProjectionMatrix(D3DXMATRIX&);
-	//void GetWorldMatrix(D3DXMATRIX&);
-	//void GetOrthoMatrix(D3DXMATRIX&);
+	XMMATRIX& GetProjectionMatrix();
+	XMMATRIX& GetWorldMatrix();
+	XMMATRIX& GetOrthoMatrix();
 
-	XMMATRIX GetProjectionMatrix();
-	XMMATRIX GetWorldMatrix();
-	XMMATRIX GetOrthoMatrix();
+	void SetProjectionMatrix(XMMATRIX&);
+	void SetWorldMatrix(XMMATRIX&);
+	void SetWorldMatrix(float);
+
+	D3D_DRIVER_TYPE& GetDriverType();
 
 private:
 
@@ -43,11 +46,7 @@ private:
 	ID3D11Texture2D*		g_pDepthStencilBuffer;
 	ID3D11DepthStencilView* g_pDepthStencilView;
 
-	//ID3D11DepthStencilState*m_depthStencilState;
-	//ID3D11RasterizerState*	m_rasterState;
-	//D3DXMATRIX m_projectionMatrix;
-	//D3DXMATRIX m_worldMatrix;
-	//D3DXMATRIX m_orthoMatrix;
+	D3D_DRIVER_TYPE			g_driverType;
 
 	XMMATRIX g_World;
 	XMMATRIX g_Ortho;

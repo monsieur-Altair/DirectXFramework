@@ -6,6 +6,7 @@ GraphicsClass::GraphicsClass()
 	this->m_Camera = 0;
 	this->m_Model = 0;
 	this->m_ColorShader = 0;
+	this->m_UI = 0;
 }
 
 
@@ -79,6 +80,20 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 		return false;
 	}
 
+
+	m_UI = new UIClass;
+	if (!m_UI)
+	{
+		return false;
+	}
+	
+	result = m_UI->Intialize(m_D3D->GetSwapChain());
+	if (!result)
+	{
+		MessageBox(g_hWnd, L"Could not initialize the UI object.", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -114,16 +129,24 @@ void GraphicsClass::Shutdown()
 		delete m_D3D;
 		m_D3D = 0;
 	}
+
+	if (m_UI)
+	{
+		m_UI->Shutdown();
+		delete m_UI;
+		m_UI = 0;
+	}
+
 	return;
 }
 
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(CameraInform& cameraInf)
 {
 	bool result;
 
 	// Render the graphics scene.
-	result = this->Render();
+	result = this->Render(cameraInf);
 	if (!result)
 	{
 		return false;
@@ -132,22 +155,45 @@ bool GraphicsClass::Frame()
 }
 
 
-bool GraphicsClass::Render()
+bool GraphicsClass::Render(CameraInform& cameraInf)
 {
 	//D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 	XMMATRIX viewMatrix, projectionMatrix, worldMatrix;
 
 	bool result;
 
-	float r = 0.2f,
-		g = 0.0f,
-		b = 1.0f,
+	float r = 0.23f,
+		g = 0.05f,
+		b = 0.36f,
 		a = 1.0f;
+
+
+
+
+	D3D_DRIVER_TYPE g_driverType = this->m_D3D->GetDriverType();
+	static float t = 0.0f;
+	if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
+	{
+		t += (float)XM_PI * 0.0125f;
+	}
+	else
+	{
+		static DWORD dwTimeStart = 0;
+		DWORD dwTimeCur = GetTickCount();
+		if (dwTimeStart == 0)
+			dwTimeStart = dwTimeCur;
+		t = (dwTimeCur - dwTimeStart) / 1000.0f;
+	}
+
+
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(r, g, b, a);
 
 	//Generate the view matrix based on the camera's position.
-	m_Camera->Render();
+	m_Camera->Render(cameraInf);
+	//m_Camera->Render();
+
+	m_D3D->SetWorldMatrix(t);
 	
 	// Get the world, view, and projection matrices from the camera and d3d objects.
 	viewMatrix = m_Camera->GetViewMatrix();
@@ -156,6 +202,8 @@ bool GraphicsClass::Render()
 	
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
+
+
 	
 	// Render the model using the color shader.
 	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
@@ -163,6 +211,8 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
+
+	m_UI->Draw();
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();

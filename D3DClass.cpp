@@ -8,11 +8,6 @@ D3DClass::D3DClass()
 	g_pRenderTargetView = NULL;
 	g_pDepthStencilBuffer = NULL;
 	g_pDepthStencilView = NULL;
-
-	//m_depthStencilBuffer = 0;
-	//m_depthStencilState = 0;
-	//m_depthStencilView = 0;
-	//m_rasterState = 0;
 }
 
 
@@ -36,7 +31,7 @@ bool D3DClass::Initialize(HWND g_hWnd)
 	//
 	//DXGI_SWAP_CHAIN_DESC			swapChainDesc;
 	DXGI_SWAP_CHAIN_DESC			swapChainDesc;
-	D3D_DRIVER_TYPE					g_driverType = D3D_DRIVER_TYPE_NULL;
+	
 	D3D_FEATURE_LEVEL				g_featureLevel = D3D_FEATURE_LEVEL_11_0;
 
 	D3D11_TEXTURE2D_DESC			descDepth;
@@ -58,6 +53,7 @@ bool D3DClass::Initialize(HWND g_hWnd)
 #ifdef _DEBUG
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
+	createDeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;//////////////////////////
 
 	D3D_DRIVER_TYPE driverTypes[] =
 	{
@@ -100,12 +96,25 @@ bool D3DClass::Initialize(HWND g_hWnd)
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.Windowed = TRUE;
 
+	g_driverType = D3D_DRIVER_TYPE_NULL;
+
 	//янгдюмхе цкюбмнцн назейрю х жеонвйх налемю(нмю йнохпсер я рюпцерю мю нймн)
 	for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
 	{
 		g_driverType = driverTypes[driverTypeIndex];
-		result = D3D11CreateDeviceAndSwapChain(NULL, g_driverType, NULL, createDeviceFlags, featureLevels, numFeatureLevels,
-			D3D11_SDK_VERSION, &swapChainDesc, &g_pSwapChain, &g_pd3dDevice, &g_featureLevel, &g_pImmediateContext);
+		result = D3D11CreateDeviceAndSwapChain(
+			NULL, 
+			g_driverType, 
+			NULL, 
+			createDeviceFlags, 
+			featureLevels, 
+			numFeatureLevels,
+			D3D11_SDK_VERSION, 
+			&swapChainDesc, 
+			&g_pSwapChain, 
+			&g_pd3dDevice, 
+			&g_featureLevel,
+			&g_pImmediateContext);
 		if (SUCCEEDED(result))
 			break;
 	}
@@ -312,29 +321,8 @@ bool D3DClass::Initialize(HWND g_hWnd)
 
 void D3DClass::Shutdown()
 {
-	// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
-	/*if (g_pSwapChain)
-	{
-		g_pSwapChain->SetFullscreenState(false, NULL);
-	}
-
-	if (m_rasterState)
-	{
-		m_rasterState->Release();
-		m_rasterState = 0;
-	}
-
-	if (m_depthStencilView)
-	{
-		m_depthStencilView->Release();
-		m_depthStencilView = 0;
-	}
-
-	if (m_depthStencilState)
-	{
-		m_depthStencilState->Release();
-		m_depthStencilState = 0;
-	}*/
+	//this->g_pSwapChain->SetFullscreenState(false, NULL);
+	//PostMessage(this->hwn, WM_DESTROY, 0, 0);
 
 	if (g_pDepthStencilBuffer)
 	{
@@ -396,20 +384,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 
 void D3DClass::EndScene()
 {
-	//// Present the back buffer to the screen since rendering is complete.
-	//if (m_vsync_enabled)
-	//{
-	//	// Lock to screen refresh rate.
-	//	g_pSwapChain->Present(1, 0);
-	//}
-	//else
-	//{
-	//	// Present as fast as possible.
-	//	g_pSwapChain->Present(0, 0);
-	//}
-
 	g_pSwapChain->Present(0, 0);
-
 	return;
 }
 
@@ -424,37 +399,44 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext()
 	return g_pImmediateContext;
 }
 
-XMMATRIX D3DClass::GetProjectionMatrix()
+IDXGISwapChain* D3DClass::GetSwapChain()
+{
+	return this->g_pSwapChain;
+}
+
+XMMATRIX& D3DClass::GetProjectionMatrix()
 {
 	return this->g_Projection;
 }
 
-XMMATRIX D3DClass::GetWorldMatrix()
+XMMATRIX& D3DClass::GetWorldMatrix()
 {
 	return this->g_World;
 }
 
-XMMATRIX D3DClass::GetOrthoMatrix()
+XMMATRIX& D3DClass::GetOrthoMatrix()
 {
 	return this->g_Ortho;
 }
 
-//void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
-//{
-//	projectionMatrix = m_projectionMatrix;
-//	return;
-//}
-//
-//
-//void D3DClass::GetWorldMatrix(D3DXMATRIX& worldMatrix)
-//{
-//	worldMatrix = m_worldMatrix;
-//	return;
-//}
-//
-//
-//void D3DClass::GetOrthoMatrix(D3DXMATRIX& orthoMatrix)
-//{
-//	orthoMatrix = m_orthoMatrix;
-//	return;
-//}
+void D3DClass::SetProjectionMatrix(XMMATRIX& matr)
+{
+	this->g_Projection = matr;
+}
+
+void D3DClass::SetWorldMatrix(XMMATRIX& matr)
+{
+	this->g_World = matr;
+}
+
+void D3DClass::SetWorldMatrix(float t)
+{
+	XMMATRIX mTranslate1 = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	XMMATRIX mSpin1 = XMMatrixRotationY(t);
+	this->g_World = mSpin1 * mTranslate1;
+}
+
+D3D_DRIVER_TYPE& D3DClass::GetDriverType()
+{
+	return this->g_driverType;
+}
