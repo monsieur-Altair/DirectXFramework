@@ -4,7 +4,7 @@
 #include "D3DClass.h"
 #include "CameraClass.h"
 #include "ModelClass.h"
-#include "ColorShaderClass.h"
+#include "ShaderClass.h"
 #include "UIClass.h"
 
 class GraphicsClass
@@ -23,7 +23,7 @@ private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
-	ColorShaderClass* m_ColorShader;
+	ShaderClass* m_Shader;
 	UIClass* m_UI;
 };
 

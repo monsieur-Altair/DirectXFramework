@@ -374,13 +374,14 @@
   <ItemGroup>
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="CameraInform.cpp" />
-    <ClCompile Include="ColorShaderClass.cpp" />
+    <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="DirectInputClass.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="TextClass.cpp" />
+    <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TimerClass.cpp" />
     <ClCompile Include="Tutorial06.cpp" />
     <ClCompile Include="UIClass.cpp" />
@@ -388,7 +389,7 @@
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="CameraInform.h" />
-    <ClInclude Include="ColorShaderClass.h" />
+    <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="DirectInputClass.h" />
@@ -397,6 +398,7 @@
     <CLInclude Include="resource.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="TextClass.h" />
+    <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimerClass.h" />
     <ClInclude Include="UIClass.h" />
     <ResourceCompile Include="Tutorial06.rc" />

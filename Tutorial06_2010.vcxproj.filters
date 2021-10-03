@@ -29,7 +29,7 @@
     <ClInclude Include="D3DClass.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ColorShaderClass.h">
+    <ClInclude Include="ShaderClass.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ModelClass.h">
@@ -56,6 +56,7 @@
     <ClInclude Include="TimerClass.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="TextureClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tutorial06.cpp" />
@@ -68,7 +69,7 @@
     <ClCompile Include="D3DClass.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ColorShaderClass.cpp">
+    <ClCompile Include="ShaderClass.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="ModelClass.cpp">
@@ -92,6 +93,7 @@
     <ClCompile Include="TimerClass.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="TextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

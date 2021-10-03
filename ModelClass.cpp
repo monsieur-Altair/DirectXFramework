@@ -6,6 +6,7 @@ ModelClass::ModelClass()
 	g_pIndexBuffer = 0;
 	this->m_indexCount = 0;
 	this->m_vertexCount = 0;
+	this->m_Texture = 0;
 }
 
 
@@ -18,7 +19,7 @@ ModelClass::~ModelClass()
 {
 }
 
-bool ModelClass::Initialize(ID3D11Device* device)
+bool ModelClass::Initialize(ID3D11Device* device, WCHAR* textureFilename)
 {
 	bool result;
 
@@ -30,11 +31,24 @@ bool ModelClass::Initialize(ID3D11Device* device)
 		return false;
 	}
 
+	result = LoadTexture(device, textureFilename);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
+}
+
+ID3D11ShaderResourceView* ModelClass::GetTexture()
+{
+	return m_Texture->GetTexture();
 }
 
 void ModelClass::Shutdown()
 {
+	ReleaseTexture();
+
 	// Release the vertex and index buffers.
 	ShutdownBuffers();
 
@@ -58,12 +72,18 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
 	Vertex vertices[]=
 	{
-		{ XMFLOAT3(1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.0f, 1.73f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+		//{ XMFLOAT3(1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+		//{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+		//{ XMFLOAT3(0.0f, 1.73f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+		//{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+		//{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+		//{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.865f, 0.5f)},
+		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.865f, 0.5f) },
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(1.0f, 0.0f) },
 	};
 	WORD indices[]=
 	{
@@ -85,7 +105,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	HRESULT result;
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 8;
+	m_vertexCount = 6;
 
 	// Set the number of indices in the index array.
 	m_indexCount = 24;
@@ -140,6 +160,28 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
+bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
+{
+	bool result;
+
+
+	// Create the texture object.
+	m_Texture = new TextureClass;
+	if (!m_Texture)
+	{
+		return false;
+	}
+
+	// Initialize the texture object.
+	result = m_Texture->Initialize(device, filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void ModelClass::ShutdownBuffers()
 {
 	// Release the index buffer.
@@ -160,6 +202,20 @@ void ModelClass::ShutdownBuffers()
 
 	return;
 }
+
+void ModelClass::ReleaseTexture()
+{
+	// Release the texture object.
+	if (m_Texture)
+	{
+		m_Texture->Shutdown();
+		delete m_Texture;
+		m_Texture = 0;
+	}
+
+	return;
+}
+
 
 void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {

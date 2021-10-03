@@ -5,7 +5,7 @@ GraphicsClass::GraphicsClass()
 	this->m_D3D = 0;
 	this->m_Camera = 0;
 	this->m_Model = 0;
-	this->m_ColorShader = 0;
+	this->m_Shader = 0;
 	this->m_UI = 0;
 }
 
@@ -23,6 +23,7 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(HWND g_hWnd)
 {
 	bool result;
+	WCHAR* textureFilename = L"texture.png";
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -58,7 +59,7 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 	}
 	
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice());
+	result = m_Model->Initialize(m_D3D->GetDevice(), textureFilename);
 	if (!result)
 	{
 		MessageBox(g_hWnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -66,17 +67,17 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 	}
 	
 	// Create the color shader object.
-	m_ColorShader = new ColorShaderClass;
-	if (!m_ColorShader)
+	m_Shader = new ShaderClass;
+	if (!m_Shader)
 	{
 		return false;
 	}
 	
 	// Initialize the color shader object.
-	result = m_ColorShader->Initialize(m_D3D->GetDevice(), g_hWnd);
+	result = m_Shader->Initialize(m_D3D->GetDevice(), g_hWnd);
 	if (!result)
 	{
-		MessageBox(g_hWnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
+		MessageBox(g_hWnd, L"Could not initialize the shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -101,11 +102,11 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
-	if (m_ColorShader)
+	if (m_Shader)
 	{
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = 0;
+		m_Shader->Shutdown();
+		delete m_Shader;
+		m_Shader = 0;
 	}
 		
 	// Release the model object.
@@ -162,9 +163,14 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 
 	bool result;
 
-	float r = 0.23f,
+	//float r = 0.23f,
+	//	g = 0.05f,
+	//	b = 0.36f,
+	//	a = 1.0f;
+
+	float r = 0.03f,
 		g = 0.05f,
-		b = 0.36f,
+		b = 0.06f,
 		a = 1.0f;
 
 
@@ -206,7 +212,15 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 
 	
 	// Render the model using the color shader.
-	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = m_Shader->Render(
+		m_D3D->GetDeviceContext(),
+		m_Model->GetIndexCount(),
+		worldMatrix,
+		viewMatrix,
+		projectionMatrix,
+		m_Model->GetTexture()
+	);
+
 	if (!result)
 	{
 		return false;
