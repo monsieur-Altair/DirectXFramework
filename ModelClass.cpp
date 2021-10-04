@@ -78,12 +78,34 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		//{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
 		//{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
 		//{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 0.0f) },
-		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.865f, 0.5f)},
-		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.865f, 0.5f) },
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) },
-		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(1.0f, 0.0f) },
+
+
+		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f) }, //0
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //1
+		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.5f, 1-0.865f)}, //2
+
+		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f) }, //3
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //4
+		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(0.5f, 1-0.865f) }, //5
+
+
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(0.0f, 0.0f)}, //2
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(1.0f, 0.0f) }, //5
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //3
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //0
+
+
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(0.0f, 0.0f) }, //5
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(1.0f, 0.0f)}, //2
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f) }, //1
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f) }, //4
+
+
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 0.0f) }, //0
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 0.0f) }, //3
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //4
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //1
+
 	};
 	WORD indices[]=
 	{
@@ -91,21 +113,30 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 		3,5,4,
 
-		0,5,3,
-		0,2,5,
+		6,7,8,
+		6,8,9,
 
-		5,2,4,
-		2,1,4,
+		10,11,12,
+		10,12,13,
 
-		3,4,0,
-		0,4,1,
+		14,15,16,
+		14,16,17,
+
+		//0,5,3,
+		//0,2,5,
+
+		//5,2,4,
+		//2,1,4,
+
+		//3,4,0,
+		//0,4,1,
 	};
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 6;
+	m_vertexCount = 18;
 
 	// Set the number of indices in the index array.
 	m_indexCount = 24;
