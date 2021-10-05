@@ -7,6 +7,7 @@ ShaderClass::ShaderClass()
 	g_pVertexLayout = 0;
 	g_pConstantBuffer = 0;
 	g_pSampleState = 0;
+	g_pLightConstantBuffer = 0;
 }
 
 
@@ -41,14 +42,30 @@ void ShaderClass::Shutdown()
 	return;
 }
 
-bool ShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix,
-	XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool ShaderClass::Render(
+	ID3D11DeviceContext* deviceContext, 
+	int indexCount, 
+	XMMATRIX worldMatrix,
+	XMMATRIX viewMatrix, 
+	XMMATRIX projectionMatrix, 
+	ID3D11ShaderResourceView* texture,
+	XMFLOAT4 direction,
+	XMFLOAT4 diffuseColor,
+	XMFLOAT4 ambient)
 {
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture);
+	result = SetShaderParameters(
+		deviceContext, 
+		worldMatrix, 
+		viewMatrix, 
+		projectionMatrix, 
+		texture,
+		direction,
+		diffuseColor,
+		ambient	);
 	if (!result)
 	{
 		return false;
@@ -191,6 +208,7 @@ bool ShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* filen
 	ID3D10Blob* pixelShaderBuffer = NULL;
 	unsigned int numElements;
 	D3D11_BUFFER_DESC constBufferDesc;
+	D3D11_BUFFER_DESC lightConstBufferDesc;
 	D3D11_SAMPLER_DESC sampDesc;
 
 	// Initialize the pointers this function will use to null.
@@ -251,11 +269,12 @@ bool ShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* filen
 
 
 	// Определение формата вершинного буфера
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2] =
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		//{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	// Get a count of the elements in the layout.
@@ -300,6 +319,27 @@ bool ShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* filen
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	result = device->CreateBuffer(&constBufferDesc, NULL, &g_pConstantBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+
+
+
+	ZeroMemory(&lightConstBufferDesc, sizeof(lightConstBufferDesc));
+	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
+	lightConstBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//constBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightConstBufferDesc.ByteWidth = sizeof(ConstantBuffer);
+	lightConstBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//constBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightConstBufferDesc.CPUAccessFlags = 0;
+	//constBufferDesc.MiscFlags = 0;
+	//constBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	result = device->CreateBuffer(&lightConstBufferDesc, NULL, &g_pLightConstantBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -363,7 +403,6 @@ void ShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, 
 	return;
 }
 
-
 HRESULT ShaderClass::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut, HWND hwnd)
 {
 	HRESULT hr = S_OK;
@@ -387,8 +426,6 @@ HRESULT ShaderClass::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoin
 
 	return S_OK;
 }
-
-
 
 void ShaderClass::ShutdownShader()
 {
@@ -426,10 +463,13 @@ void ShaderClass::ShutdownShader()
 		g_pSampleState = 0;
 	}
 
+	if (g_pLightConstantBuffer)
+	{
+		g_pLightConstantBuffer->Release();
+		g_pLightConstantBuffer = 0;
+	}
 	return;
 }
-
-
 
 /////////////////////////
 //bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix,
@@ -473,27 +513,54 @@ void ShaderClass::ShutdownShader()
 //}
 
 ///////////////////////
-bool ShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix,
-	XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool ShaderClass::SetShaderParameters(
+	ID3D11DeviceContext* deviceContext, 
+	XMMATRIX worldMatrix,
+	XMMATRIX viewMatrix, 
+	XMMATRIX projectionMatrix, 
+	ID3D11ShaderResourceView* texture,
+	XMFLOAT4 direction,
+	XMFLOAT4 diffuseColor,
+	XMFLOAT4 ambient)
 {
 	HRESULT result;
-	ConstantBuffer dataPtr;
+	ConstantBuffer buf1;
+	LightConstantBuffer buf2;
 	unsigned int bufferNumber;
 
 
 	// Copy the matrices into the constant buffer.
-	dataPtr.world = XMMatrixTranspose(worldMatrix);
-	dataPtr.view = XMMatrixTranspose(viewMatrix);
-	dataPtr.projection = XMMatrixTranspose(projectionMatrix);
+	buf1.world = XMMatrixTranspose(worldMatrix);
+	buf1.view = XMMatrixTranspose(viewMatrix);
+	buf1.projection = XMMatrixTranspose(projectionMatrix);
+	
+	
+	buf2.vLightColor[0] = diffuseColor;
+	buf2.vLightDir[0] = direction;
+	buf2.vLightAmbient[0] = ambient;
 
+	buf2.vLightColor[1]   = XMFLOAT4(1, 0, 0, 1);
+	buf2.vLightDir[1]     = XMFLOAT4(-2, 2, 0, 1);
+	buf2.vLightAmbient[1] = XMFLOAT4(0.3f, 0.3f, 0.3f, 1);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
-	
-	deviceContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &dataPtr, 0, 0);
+
+	deviceContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &buf1, 0, 0);
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &g_pConstantBuffer);
+
+
+
+	// Set the position of the pixel buffer in the vertex shader.
+	bufferNumber = 0;
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &g_pLightConstantBuffer);
+
+	deviceContext->UpdateSubresource(g_pLightConstantBuffer, 0, NULL, &buf2, 0, 0);
+	
+	// Finally set the light constant buffer in the pixel shader with the updated values.
+
 
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 

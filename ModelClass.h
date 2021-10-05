@@ -25,6 +25,7 @@ private:
 		XMFLOAT3 Pos;
 		//XMFLOAT4 Color;
 		XMFLOAT2 Tex;
+		XMFLOAT3 Normal;
 	};
 
 	bool InitializeBuffers(ID3D11Device*);

@@ -374,6 +374,7 @@
   <ItemGroup>
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="CameraInform.cpp" />
+    <ClCompile Include="LightClass.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="DirectInputClass.cpp" />
@@ -389,6 +390,7 @@
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="CameraInform.h" />
+    <ClInclude Include="LightClass.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="D3DClass.h" />

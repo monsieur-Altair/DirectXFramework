@@ -6,6 +6,7 @@
 #include "ModelClass.h"
 #include "ShaderClass.h"
 #include "UIClass.h"
+#include "LightClass.h"
 
 class GraphicsClass
 {
@@ -25,5 +26,6 @@ private:
 	ModelClass* m_Model;
 	ShaderClass* m_Shader;
 	UIClass* m_UI;
+	LightClass* m_Light;
 };
 

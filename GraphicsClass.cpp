@@ -7,6 +7,7 @@ GraphicsClass::GraphicsClass()
 	this->m_Model = 0;
 	this->m_Shader = 0;
 	this->m_UI = 0;
+	this->m_Light = 0;
 }
 
 
@@ -95,13 +96,22 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 		return false;
 	}
 
+	m_Light = new LightClass;
+	if (!m_Light)
+	{
+		return false;
+	}
+	m_Light->SetDirection(2.0f, 2.0f, 0.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetAmbient(0.3f, 0.3f, 0.3f, 0.3f);
+
+
 	return true;
 }
 
 
 void GraphicsClass::Shutdown()
 {
-	// Release the color shader object.
 	if (m_Shader)
 	{
 		m_Shader->Shutdown();
@@ -109,7 +119,6 @@ void GraphicsClass::Shutdown()
 		m_Shader = 0;
 	}
 		
-	// Release the model object.
 	if (m_Model)
 	{
 		m_Model->Shutdown();
@@ -117,7 +126,6 @@ void GraphicsClass::Shutdown()
 		m_Model = 0;
 	}
 	
-	// Release the camera object.
 	if (m_Camera)
 	{
 		delete m_Camera;
@@ -136,6 +144,12 @@ void GraphicsClass::Shutdown()
 		m_UI->Shutdown();
 		delete m_UI;
 		m_UI = 0;
+	}
+
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = 0;
 	}
 
 	return;
@@ -191,7 +205,6 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 		t = (dwTimeCur - dwTimeStart) / 1000.0f;
 	}
 
-
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(r, g, b, a);
 
@@ -209,7 +222,11 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
 
-
+	////reset light direction for rotation
+	//XMMATRIX mRotate = XMMatrixRotationY(-0.0001f * t);
+	//XMVECTOR vLightDir = XMLoadFloat4(&(m_Light->GetDirection()));
+	//vLightDir = XMVector3Transform(vLightDir, mRotate);
+	//XMStoreFloat4(&(m_Light->GetDirection()), vLightDir);
 	
 	// Render the model using the color shader.
 	result = m_Shader->Render(
@@ -218,8 +235,10 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 		worldMatrix,
 		viewMatrix,
 		projectionMatrix,
-		m_Model->GetTexture()
-	);
+		m_Model->GetTexture(),
+		m_Light->GetDirection(),
+		m_Light->GetDiffuseColor(),
+		m_Light->GetAmbient());
 
 	if (!result)
 	{

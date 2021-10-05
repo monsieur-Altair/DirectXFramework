@@ -80,32 +80,69 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		//{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
 
 
-		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f) }, //0
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //1
-		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.5f, 1-0.865f)}, //2
+		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f,-1.0f) }, //0
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
+		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
 
-		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f) }, //3
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //4
-		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(0.5f, 1-0.865f) }, //5
-
-
-		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(0.0f, 0.0f)}, //2
-		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(1.0f, 0.0f) }, //5
-		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //3
-		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //0
+		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
+		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f, 1.0f) }, //5
 
 
-		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(0.0f, 0.0f) }, //5
-		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(1.0f, 0.0f)}, //2
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f) }, //1
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f) }, //4
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(1.0f, 0.0f), XMFLOAT3(0.0f,1.0f, 1.0f) }, //5
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f), XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(0.865f,-0.5f,-1.0f) }, //0
 
 
-		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 0.0f) }, //0
-		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 0.0f) }, //3
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f) }, //4
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f) }, //1
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(0.0f,1.0f, 1.0f) }, //5
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(1.0f, 0.0f), XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
 
+
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(0.865f,-0.5f,-1.0f) }, //0
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 0.0f), XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
+
+
+
+
+
+
+		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //1
+		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //2
+		//{ XMFLOAT3(1.0f,  1.0f, -1.0f),   XMFLOAT2(1.0f, 0.0f), XMFLOAT3(1.0f,  1.0f, -1.0f) }, //3
+		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),   XMFLOAT2(1.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //4
+
+		//{ XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(-1.0f, -1.0f, 1.0f) }, //5
+		//{ XMFLOAT3(1.0f, -1.0f, 1.0f),   XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(1.0f, -1.0f, 1.0f) }, //6
+		//{ XMFLOAT3(1.0f,  1.0f, 1.0f),   XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(1.0f,1.0f,1.0f) }, //7
+		//{ XMFLOAT3(-1.0f,  1.0f, 1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(-1.0f,  1.0f, 1.0f) }, //8
+
+
+		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //2
+		//{ XMFLOAT3(-1.0f, 1.0f,  1.0f),  XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(-1.0f, 1.0f,  1.0f) }, //4
+		//{ XMFLOAT3(1.0f, 1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(1.0f, 1.0f,  1.0f) }, //2
+		//{ XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT2(1.0f, 1.0f),XMFLOAT3(1.0f, 1.0f, -1.0f) }, //5
+
+
+		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT2(1.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //1
+		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),   XMFLOAT2(0.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //4
+		//{ XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(1.0f, -1.0f, 1.0f) }, //2
+		//{ XMFLOAT3(-1.0f, -1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f), XMFLOAT3(-1.0f, -1.0f,  1.0f) }, //3
+
+		//{ XMFLOAT3(-1.0f, -1.0f,  1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(-1.0f, -1.0f,  1.0f) }, //5
+		//{ XMFLOAT3(-1.0f,  1.0f,  1.0f),   XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(-1.0f,  1.0f,  1.0f) }, //6
+		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),   XMFLOAT2(1.0f, 0.0f),  XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //7
+		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),   XMFLOAT2(1.0f, 1.0f),XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //8
+
+
+		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //2
+		//{ XMFLOAT3(1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(1.0f,  1.0f, -1.0f) }, //4
+		//{ XMFLOAT3(1.0f,  1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(1.0f,  1.0f,  1.0f) }, //2
+		//{ XMFLOAT3(1.0f, -1.0f,  1.0f),  XMFLOAT2(1.0f, 1.0f),XMFLOAT3(1.0f, -1.0f,  1.0f) }, //5
 	};
 	WORD indices[]=
 	{
@@ -122,6 +159,10 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		14,15,16,
 		14,16,17,
 
+
+
+
+
 		//0,5,3,
 		//0,2,5,
 
@@ -130,16 +171,43 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 		//3,4,0,
 		//0,4,1,
+
+
+
+
+
+		// 0,  1,  2,
+		//0,  2,  3,
+
+		//// Back Face
+		//4,  5,  6,
+		//4,  6,  7,
+
+		//// Top Face
+		//8,  9, 10,
+		//8, 10, 11,
+
+		//// Bottom Face
+		//12, 13, 14,
+		//12, 14, 15,
+
+		//// Left Face
+		//16, 17, 18,
+		//16, 18, 19,
+
+		//// Right Face
+		//20, 21, 22,
+		//20, 22, 23
 	};
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 18;
+	m_vertexCount = 18;//18
 
 	// Set the number of indices in the index array.
-	m_indexCount = 24;
+	m_indexCount = 24;//24
 
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 	// Set up the description of the static vertex buffer.
