@@ -224,7 +224,7 @@ bool ShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* filen
 	}
 
 	// Compile the pixel shader code.
-	result = CompileShaderFromFile(L"Tutorial05.fx", "PS", "ps_4_0", &pixelShaderBuffer, hwnd);
+	result = CompileShaderFromFile(L"Tutorial05.fx", "PS0", "ps_4_0", &pixelShaderBuffer, hwnd);
 	if (FAILED(result))
 	{
 		MessageBox(NULL,
@@ -562,7 +562,7 @@ bool ShaderClass::SetShaderParameters(
 	// Finally set the light constant buffer in the pixel shader with the updated values.
 
 
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(1, 1, &texture);
 
 	return true;
 }

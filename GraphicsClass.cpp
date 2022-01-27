@@ -24,7 +24,9 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(HWND g_hWnd)
 {
 	bool result;
-	WCHAR* textureFilename = L"texture.png";
+	//WCHAR* textureFilename = L"texture.png";
+	//WCHAR* textureFilename = L"grace_cube.dds";
+	WCHAR* textureFilename = L"islands.dds";
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -102,7 +104,7 @@ bool GraphicsClass::Initialize(HWND g_hWnd)
 		return false;
 	}
 	m_Light->SetDirection(2.0f, 2.0f, 0.0f);
-	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 0.0f);
 	m_Light->SetAmbient(0.3f, 0.3f, 0.3f, 0.3f);
 
 
@@ -194,7 +196,7 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 	static float t = 0.0f;
 	if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
 	{
-		t += (float)XM_PI * 0.0125f;
+		//t += (float)XM_PI * 0.0125f;
 	}
 	else
 	{
@@ -202,7 +204,7 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 		DWORD dwTimeCur = GetTickCount();
 		if (dwTimeStart == 0)
 			dwTimeStart = dwTimeCur;
-		t = (dwTimeCur - dwTimeStart) / 1000.0f;
+		//t = (dwTimeCur - dwTimeStart) / 1000.0f;
 	}
 
 	// Clear the buffers to begin the scene.
@@ -223,10 +225,10 @@ bool GraphicsClass::Render(CameraInform& cameraInf)
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	////reset light direction for rotation
-	//XMMATRIX mRotate = XMMatrixRotationY(-0.0001f * t);
-	//XMVECTOR vLightDir = XMLoadFloat4(&(m_Light->GetDirection()));
-	//vLightDir = XMVector3Transform(vLightDir, mRotate);
-	//XMStoreFloat4(&(m_Light->GetDirection()), vLightDir);
+	XMMATRIX mRotate = XMMatrixRotationY(-0.0001f * t);
+	/*XMVECTOR vLightDir = XMLoadFloat4(&(m_Light->GetDirection()));
+	vLightDir = XMVector3Transform(vLightDir, mRotate);
+	XMStoreFloat4(&(m_Light->GetDirection()), vLightDir);*/
 	
 	// Render the model using the color shader.
 	result = m_Shader->Render(

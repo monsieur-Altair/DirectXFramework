@@ -70,7 +70,7 @@ int ModelClass::GetIndexCount()
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
-	Vertex vertices[]=
+	Vertex vertices[] =
 	{
 		//{ XMFLOAT3(1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
 		//{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
@@ -80,13 +80,13 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		//{ XMFLOAT3(0.0f, 1.73f,  1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
 
 
-		{ XMFLOAT3( 1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f,-1.0f) }, //0
-		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
-		{ XMFLOAT3( 0.0f, 1.73f, -1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
+		{ XMFLOAT3(1.0f, 0.0f,  -1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f,-1.0f) }, //0
+		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
+		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
 
-		{ XMFLOAT3( 1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
-		{ XMFLOAT3(-1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
-		{ XMFLOAT3( 0.0f, 1.73f,  1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f, 1.0f) }, //5
+		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
+		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
+		{ XMFLOAT3(0.0f, 1.73f,  1.0f),  XMFLOAT2(0.5f, 0.135f),XMFLOAT3(0.0f,1.0f, 1.0f) }, //5
 
 
 		{ XMFLOAT3(0.0f, 1.73f, -1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(0.0f,1.0f,-1.0f) }, //2
@@ -105,45 +105,8 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		{ XMFLOAT3(1.0f, 0.0f,   1.0f),  XMFLOAT2(1.0f, 0.0f), XMFLOAT3(0.865f,-0.5f, 1.0f) }, //3
 		{ XMFLOAT3(-1.0f, 0.0f,   1.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f, 1.0f) }, //4
 		{ XMFLOAT3(-1.0f, 0.0f,  -1.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-0.865f,-0.5f,-1.0f) }, //1
-
-
-
-
-
-
-		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //1
-		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //2
-		//{ XMFLOAT3(1.0f,  1.0f, -1.0f),   XMFLOAT2(1.0f, 0.0f), XMFLOAT3(1.0f,  1.0f, -1.0f) }, //3
-		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),   XMFLOAT2(1.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //4
-
-		//{ XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT2(1.0f, 1.0f),  XMFLOAT3(-1.0f, -1.0f, 1.0f) }, //5
-		//{ XMFLOAT3(1.0f, -1.0f, 1.0f),   XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(1.0f, -1.0f, 1.0f) }, //6
-		//{ XMFLOAT3(1.0f,  1.0f, 1.0f),   XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(1.0f,1.0f,1.0f) }, //7
-		//{ XMFLOAT3(-1.0f,  1.0f, 1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(-1.0f,  1.0f, 1.0f) }, //8
-
-
-		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //2
-		//{ XMFLOAT3(-1.0f, 1.0f,  1.0f),  XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(-1.0f, 1.0f,  1.0f) }, //4
-		//{ XMFLOAT3(1.0f, 1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(1.0f, 1.0f,  1.0f) }, //2
-		//{ XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT2(1.0f, 1.0f),XMFLOAT3(1.0f, 1.0f, -1.0f) }, //5
-
-
-		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT2(1.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //1
-		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),   XMFLOAT2(0.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //4
-		//{ XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT2(0.0f, 0.0f), XMFLOAT3(1.0f, -1.0f, 1.0f) }, //2
-		//{ XMFLOAT3(-1.0f, -1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f), XMFLOAT3(-1.0f, -1.0f,  1.0f) }, //3
-
-		//{ XMFLOAT3(-1.0f, -1.0f,  1.0f),  XMFLOAT2(0.0f, 1.0f),  XMFLOAT3(-1.0f, -1.0f,  1.0f) }, //5
-		//{ XMFLOAT3(-1.0f,  1.0f,  1.0f),   XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(-1.0f,  1.0f,  1.0f) }, //6
-		//{ XMFLOAT3(-1.0f,  1.0f, -1.0f),   XMFLOAT2(1.0f, 0.0f),  XMFLOAT3(-1.0f,  1.0f, -1.0f) }, //7
-		//{ XMFLOAT3(-1.0f, -1.0f, -1.0f),   XMFLOAT2(1.0f, 1.0f),XMFLOAT3(-1.0f, -1.0f, -1.0f) }, //8
-
-
-		//{ XMFLOAT3(1.0f, -1.0f, -1.0f),  XMFLOAT2(0.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, -1.0f) }, //2
-		//{ XMFLOAT3(1.0f,  1.0f, -1.0f),  XMFLOAT2(0.0f, 0.0f),  XMFLOAT3(1.0f,  1.0f, -1.0f) }, //4
-		//{ XMFLOAT3(1.0f,  1.0f,  1.0f),   XMFLOAT2(1.0f, 0.0f),XMFLOAT3(1.0f,  1.0f,  1.0f) }, //2
-		//{ XMFLOAT3(1.0f, -1.0f,  1.0f),  XMFLOAT2(1.0f, 1.0f),XMFLOAT3(1.0f, -1.0f,  1.0f) }, //5
 	};
+
 	WORD indices[]=
 	{
 		0,1,2,
